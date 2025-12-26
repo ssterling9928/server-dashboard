@@ -1,0 +1,42 @@
+services:
+  - name: Grafana Alloy
+    container_name: alloy
+    url: null
+    group: monitoring
+    type: docker
+
+  - name: Grafana Loki
+    container_name: loki
+    url: null
+    group: monitoring
+    type: docker
+
+  - name: Grafana
+    container_name: grafana
+    url: "https://grafana.sterling-dev.com"
+    group: monitoring
+    type: docker
+
+  - name: Plex (Local)
+    container_name: null
+    url: "https://plex.internal"
+    group: media
+    type: app
+
+  - name: Plex (Web)
+    container_name: null
+    url: "https://plex.sterling-dev.com"
+    group: media
+    type: app
+
+  - name: Cloudflared Tunnel
+    container_name: cloudflared
+    url: null
+    group: infra
+    type: docker
+
+  - name: VS Code Server
+    container_name: code-server
+    url: "https://code.sterling-dev.com"
+    group: dev
+    type: docker
