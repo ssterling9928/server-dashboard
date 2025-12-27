@@ -3,21 +3,12 @@
 from fastapi import FastAPI
 from fastapi import HTTPException
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 from pathlib import Path
 import yaml
 import docker
 import http.client, urllib.parse
 
-# Set the config path and define dictionary for services
-CONFIG_PATH = Path("/app/config.yaml")
-SERVICE_DEFS: dict[str, Service] = {}
-
-# Create app
-app = FastAPI(title="Server Dashboard API", version="1.0.0")
-
-# Set docker_client from the environment
-docker_client = docker.from_env()
 
 # Base Service Model
 class Service(BaseModel):
@@ -29,6 +20,19 @@ class Service(BaseModel):
     type: str                               # type of service ('app' or 'docker' container)
     status: str | None = None               # status of service (up or down)
     
+
+# Set the config path and define dictionary for services
+CONFIG_PATH = Path("/app/config.yaml")
+SERVICE_DEFS: dict[str, Service] = {}
+
+
+# Create app
+app = FastAPI(title="Server Dashboard API", version="1.0.0")
+
+# Set docker_client from the environment
+docker_client = docker.from_env()
+
+
 
 # Define load_config function   
 def load_config() -> None:
@@ -43,7 +47,7 @@ def load_config() -> None:
 
     # open config path and read config file with safe open
     with CONFIG_PATH.open("r") as config:
-        raw = yaml.safe_open(config) or {}
+        raw = yaml.safe_load(config) or {}
     
     # create raw services from yaml config file
     services = raw.get("services", [])
@@ -75,52 +79,85 @@ def health():
     try:
         docker_client.ping()
         return {"status": "ok"}
-    except Exception as e:
-        return {"status": "error", "message": str(e)}
+    except Exception as error:
+        return {"status": "error", "message": str(error)}
 
+
+# Define get_services endpoint - gets list of services
 @app.get("/services", response_model=List[Service])
 def get_services():
-    containers = docker_client.containers.List(all=True)
-    containers_by_id = {container.id: container for container in containers}
 
+    # get list of all containers
+    containers = docker_client.containers.list(all=True)
+
+    # map container IDs to container objects for quick lookup
+    containers_by_name = {container.name: container for container in containers}
+
+    # prepare result list
     result: list[Service] = []
+
+    # cycle through each service definition and retrieve values
     for svc in SERVICE_DEFS.values():
-        if svc.type == "docker" and svc.container_name:
-            container = containers_by_name.get(svc.container_name)
+
+        # default status to unknown
+        status = "unknown"
+
+        # if type is docker, get container status  (id must be same as container name)
+        if svc.type == "docker":
+            container = containers_by_name.get(svc.id)    
             status = container.status if container is not None else "not_found"
+
+        # if type is app, check url status
         elif svc.type == "app" and svc.url:
             try:
                 parsedURL = urllib.parse.urlparse(svc.url)
-                port = parsed.port or (443 if parsed.scheme == "https" else 80)
-                connection_class = http.client.HTTPSConnection if parsed.scheme == "https" else http.client.HTTPConnection
+                port = parsedURL.port or (443 if parsedURL.scheme == "https" else 80)
+                connection_class = http.client.HTTPSConnection if parsedURL.scheme == "https" else http.client.HTTPConnection
                 connection = connection_class(parsedURL.hostname, port, timeout=2)
                 connection.request("GET", parsedURL.path or "/")
-                response = connection.response()
-                status = "up" if resp.status < 500 else "down"
+                response = connection.getresponse()
+                status = "up" if response.status < 500 else "down"
             except Exception:
                 status = "down"
-    result.append(
-        Service(
-            name=svc.name,
-            container_name=svc.container_name,
-            status=svc.status,
-            url=svc.url,
-            group=svc.group,
-            type=svc.type,
+    
+        # append service to result list
+        result.append(
+            Service(
+                id=svc.id,
+                name=svc.name,
+                container_name=svc.container_name,
+                status=status,
+                url=svc.url,
+                group=svc.group,
+                type=svc.type,
+            )
         )
-    )
 
     return result
 
 
-@app.post("/services/{container_name}/restart")
+# Define restart_service endpoint - restarts a docker container service
+@app.post("/services/{service_id}/restart")
 def restart_service(service_id: str):
+
+    service = SERVICE_DEFS.get(service_id)
+
+    if not service:
+        raise HTTPException(status_code=404, detail="Service not in config")
+    
+    if service.type != "docker":
+        raise HTTPException(status_code=400, detail="Restart only supported for docker services")
+
+    # attempt to get container by service_id and restart it
     try:
         container = docker_client.containers.get(service_id)
         container.restart()
-        return {"status": "restarted", "service_id": service_id}
+    
+    # handle exceptions - service not found
     except docker.errors.NotFound:
-        return {"status": "error", "message": "Service not found"}
-    except Exception as e:
-        return {"status": "error", "message": str(e)}
+        raise HTTPException(status_code=404, detail="Docker container not found")
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=f"Failed to restart: {error}")
+
+    return {"status": "restarted", "service_id": service_id}    
 
