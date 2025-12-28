@@ -23,7 +23,7 @@ services:
   - id: plex-local
     name: Plex (Local)
     container_name: null
-    url: "https://plex.internal"
+    url: "http://10.0.0.2:32400/web"
     group: media
     type: app
 
