@@ -5,6 +5,7 @@ from fastapi import HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
 from pathlib import Path
+import ssl
 import yaml
 import docker
 import http.client, urllib.parse
@@ -112,12 +113,14 @@ def get_services():
             try:
                 parsedURL = urllib.parse.urlparse(svc.url)
                 port = parsedURL.port or (443 if parsedURL.scheme == "https" else 80)
+                context = ssl._create_unverified_context()
                 connection_class = http.client.HTTPSConnection if parsedURL.scheme == "https" else http.client.HTTPConnection
-                connection = connection_class(parsedURL.hostname, port, timeout=2)
+                connection = connection_class(parsedURL.hostname, port, timeout=2, context=context)
                 connection.request("GET", parsedURL.path or "/")
                 response = connection.getresponse()
                 status = "up" if response.status < 500 else "down"
-            except Exception:
+            except Exception as error:
+                print("Plex health check error:", error)
                 status = "down"
     
         # append service to result list
