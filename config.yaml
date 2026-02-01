@@ -4,46 +4,124 @@ services:
     container_name: alloy
     url: null
     group: monitoring
-    type: docker
 
   - id: loki
     name: Grafana Loki
     container_name: loki
     url: null
     group: monitoring
-    type: docker
 
   - id: grafana
     name: Grafana
     container_name: grafana
     url: "https://grafana.sterling-dev.com"
     group: monitoring
-    type: docker
-
-  - id: plex-local
-    name: Plex (Local)
-    container_name: null
-    url: "https://plex.internal"
-    group: media
-    type: app
 
   - id: plex-web
     name: Plex (Web)
     container_name: null
     url: "https://plex.sterling-dev.com"
     group: media
-    type: app
 
   - id: cloudflared
     name: Cloudflared Tunnel
     container_name: cloudflared
     url: null
     group: infra
-    type: docker
 
   - id: code-server
     name: VS Code Server
     container_name: code-server
     url: "https://code.sterling-dev.com"
     group: dev
-    type: docker
+
+  - id: cloudflared-dns 
+    name: Cloudflared DNS 
+    container_name: cloudflared-dns 
+    url: null
+    group: infra
+
+  - id: dsm 
+    name: DSM
+    container_name: null
+    url: "https://dsm.sterling-dev.com" 
+    group: admin
+
+  - id: dsm2 
+    name: DSM2 
+    container_name: null
+    url: "https://dsm2.sterling-dev.com" 
+    group: admin
+
+  - id: nvr 
+    name: NVR 
+    container_name: null
+    url: "https://nvr.sterling-dev.com" 
+    group: monitoring
+
+  - id: server 
+    name: Server Files  
+    container_name: null
+    url: "https://synology-server.sterling-dev.com"
+    group: media
+
+# INTERNALS 
+
+  - id: plex-local
+    name: Plex (Local)
+    container_name: null
+    url: "http://plex.internal"
+    group: media
+   
+  - id: pihole
+    name: Pihole DNS 
+    container_name: pihole
+    url: "https://pihole.internal"
+    group: infra
+
+  - id: dsm-local
+    name: DSM Internal 
+    container_name: null
+    url: "https://dsm.internal" 
+    group: admin
+
+  - id: dsm2-local 
+    name: DSM2 Internal
+    container_name: null
+    url: "https://dsm2.internal" 
+    group: admin
+
+  - id: code-internal 
+    name: Code Server Internal
+    container_name: code-server
+    url: "https://code.internal" 
+    group: dev
+
+  - id: nvr-internal 
+    name: NVR Internal 
+    container_name: null
+    url: "https://nvr.internal" 
+    group: monitoring
+
+  - id: router
+    name: Router Admin 
+    container_name: null
+    url: "https://router.internal" 
+    group: admin
+
+  - id: grafana-internal 
+    name: Grafana Internal 
+    container_name: grafana
+    url: "https://grafana.internal" 
+    group: monitoring
+
+  - id: camera 
+    name: Camera 
+    container_name: null
+    url: "https://camera.internal" 
+    group: monitoring
+
+
+  
+     
+

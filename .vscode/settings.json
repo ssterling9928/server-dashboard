@@ -1,0 +1,5 @@
+{
+    "terminal.integrated.cwd": "/config/workspace/docker/server-dashboard",    // Path to docker file structure.  
+    "python.languageServer": "Default"
+    
+}
