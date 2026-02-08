@@ -7,16 +7,16 @@ networks:
 
 services:
   server-dashboard:
-    image: server-dashboard:dev
+    image: server-dashboard:latest
     container_name: server-dashboard
     ports: 
-      - "8000:8000"
+      - "8100:8000"
     dns:
       - 10.0.0.2
       - 1.1.1.1
     volumes:
-      - /volume1/docker/server-dashboard/config.yaml:/app/config.yaml
-      - /volume1/docker/server-dashboard/data:/data
+      - /volume1/docker/server-dashboard/backend/config.yaml:/app/config.yaml
+      - /volume1/docker/server-dashboard/backend/data:/app/data/
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
     networks:

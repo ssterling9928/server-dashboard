@@ -1,4 +1,16 @@
-FROM python:3.12-slim
+# Frontend
+FROM node:20-alpine AS frontend
+
+WORKDIR /frontend
+
+COPY frontend/package*.json ./
+RUN npm ci
+
+COPY frontend/ ./
+RUN npm run build
+
+# Backend
+FROM python:3.12-slim AS backend
 
 # Prevents Python from writing .pyc files and using stdout buffering
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -10,10 +22,15 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends \
     curl && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
+COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY app/ ./app/
+
+# Copy backend
+COPY backend/app/ ./app/
+
+# Copy built frontend
+COPY --from=frontend /frontend/dist /app/frontend/dist
 
 EXPOSE 8000
 

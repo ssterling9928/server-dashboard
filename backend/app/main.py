@@ -1,8 +1,14 @@
 
 # Includes and Imports
 from typing import List
+from pathlib import Path
+import os
 from fastapi import FastAPI
 from fastapi import HTTPException
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.responses import FileResponse
+import uvicorn
 from pydantic import BaseModel
 import docker
 from app.config import SERVICE_DEFS
@@ -11,8 +17,17 @@ from app.models import DockerContainer
 
 
 # Create app
+api = FastAPI(title="API", docs_url="/docs", openapi_url="/openapi.json")
 app = FastAPI(title="Server Dashboard API", version="1.0.0")
+
 docker_client = docker.from_env()
+
+FRONTEND_DIST = "/app/frontend/dist"
+
+app.mount("/api", api)
+app.mount("/", StaticFiles(directory=FRONTEND_DIST, html=True), name="frontend")
+
+
 
 class Container(BaseModel):
     name: str
@@ -31,7 +46,7 @@ class Service(BaseModel):
     container: DockerContainer | None
 
 
-@app.get("/health")
+@api.get("/health")
 def health():
     try:
         docker_client.info()
@@ -41,7 +56,7 @@ def health():
 
 
 # Define get_services endpoint - gets list of services
-@app.get("/services", response_model=List[Service])
+@api.get("/services", response_model=List[Service])
 def get_services():
     containers_by_name = get_containers_by_name()
     states = build_service_states(SERVICE_DEFS.values())
@@ -80,7 +95,7 @@ def get_services():
 
 
 # Define restart_service endpoint - restarts a docker container service
-@app.post("/services/{service_id}/restart")
+@api.post("/services/{service_id}/restart")
 def restart_service(service_id: str):
 
     service = SERVICE_DEFS.get(service_id)
@@ -107,3 +122,5 @@ def restart_service(service_id: str):
         "service_id": service_id,
         "container_name": service.container_name,
     }
+
+

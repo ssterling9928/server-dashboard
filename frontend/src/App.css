@@ -1,0 +1,44 @@
+/* App.css */
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.service-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.service-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.service-card.up {
+  border-left: 4px solid #10b981;
+  background: #f0fdf4;
+}
+
+.service-card.down {
+  border-left: 4px solid #ef4444;
+  background: #fef2f2;
+}
+
+.status {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin: 0.5rem 0;
+}
+
+.group, .docker, .container {
+  font-size: 0.9em;
+  opacity: 0.8;
+  margin-top: 0.25rem;
+}
+
+
