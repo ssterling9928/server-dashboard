@@ -4,9 +4,9 @@ import './ServiceGrid.css';
 function ServiceGrid({ services, onSelectService }) {
 
     return (
-        <section className="service-grid">
+        <section className="services-container">
             <h2>Services</h2>
-            <div className="services-container">
+            <div className="services-grid">
                 {services.map(service => (
                     <div
                         key={service.id}
@@ -14,20 +14,26 @@ function ServiceGrid({ services, onSelectService }) {
                         onClick={() => onSelectService(service)}
                         style={{ cursor: 'pointer' }}
                     >
-                        <div className="service-content">
-                            <h3>{service.name}</h3>
+                        <div className='row'>
+                            <div><h3>{service.name}</h3></div>
                             <div className="status">{service.is_up ? '🟢 UP' : '🔴 DOWN'}</div>
-                            {service.group && <div classname="group">{service.group}</div>}
-                            {service.is_docker && <div className='docker'>🐳 Docker</div>}
-                            {service.container?.status && <div className='container'>
-                                Container: {service.container.status}
-                            </div>}
                         </div>
+                        
+                        <div className='row'>
+                            <div classname="group"><strong>Group:</strong> {service.group}</div>
+                            {service.is_docker && <div className='docker'>Docker: 🐳</div>}
+                        </div>
+
                     </div>
                 ))}
             </div>
         </section>
     );
 };
+
+function onSelectService() {
     
+    
+}
+
 export default ServiceGrid;

@@ -7,12 +7,12 @@ export default defineConfig({
   server: {
   proxy: {
     '/api': {
-      target: 'http://localhost:8100',
+      target: 'http://10.0.0.2:8100',
       changeOrigin: true,
-      rewrite: (path) => path.replace(/^\/api/, ''),
+      source: true,
     },
   },
   host: true,
-  allowedHosts: ['.sterling-dev.com', 'code.internal']  // Simplified wildcard[web:12]
+  allowedHosts: ['.sterling-dev.com', 'code.internal']  
 }
 })

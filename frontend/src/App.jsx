@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import ServiceGrid from './components/ServiceGrid.jsx';
 import ServiceDetail from './components/ServiceDetail.jsx';
@@ -16,17 +14,15 @@ function mapApiService(apiService) {
     is_docker: apiService.is_docker,
     url: apiService.url || null,
     // interpret strings as booleans for the UI
-    is_up: apiService.service_status === "up",
+    is_up: apiService.service_status === "ok",
     url_status: apiService.url_status, // keep raw too if you want
-    containers: apiService.container
-      ? [
-          {
-            name: apiService.container.name,
-            id: apiService.container.id,
-            status: apiService.container.status, // e.g. "up" | "down" | "unknown"
-          },
-        ]
-      : [],
+    container: apiService.container
+      ? {
+          name: apiService.container.name,
+          id: apiService.container.id,
+          status: apiService.container.status, // e.g. "up" | "down" | "unknown"
+        }
+      : null,
   };
 }
 
@@ -52,7 +48,7 @@ useEffect(() => {
   }, []);
 
   if (loading) {
-    return <div>Loading services...</div>;
+    return <div className='loading'>Loading services...</div>;
   } 
 
   return (

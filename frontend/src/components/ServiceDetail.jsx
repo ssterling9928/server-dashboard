@@ -7,26 +7,28 @@ function ServiceDetail({ service }) {
 
   return (
     <div className="service-detail-overlay">
-      <div className="service-detail-card">
+      <div className="detail-panel">
         <button
-          className="close-btn"
+          className="btn"
           onClick={() => {/* app handles unselect */ }}
         >
           x
         </button>
-        <h2>{service.name}</h2>
+        <h2 className="detail-header">{service.name}</h2>
         <div className="status">{service.is_up ? '🟢 UP' : '🔴 DOWN'}</div>
-
-        {service.group && <p><strong>Group:</strong> {service.group}</p>}
-        {service.is_docker && <p><strong>Docker:</strong> Yes</p>}
-        {service.url && (
+        <div className="details">
+          <p><strong>Group:</strong> {service.group}</p>
+        service.is_docker && <p><strong>Docker:</strong> Yes</p>
+        service.url && (
           <p>
             <strong>URL:</strong>
             <a href={service.url} target="_blank" rel="noopener noreferrer">
               {service.url}
             </a>
           </p>
-        )}
+        )
+        </div>
+        
 
         {service.container && (
           <div>
