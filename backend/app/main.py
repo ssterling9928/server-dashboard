@@ -33,7 +33,6 @@ class Container(BaseModel):
     name: str
     id: str
     status: str
-    health: str
 
 class Service(BaseModel):
     id: str
