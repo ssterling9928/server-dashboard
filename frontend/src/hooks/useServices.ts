@@ -1,26 +1,32 @@
-
 import { useState, useEffect, useCallback } from "react";
-import { Service, ServicesResponse } from "../types/services";
-import ServiceGrid from "../css/ServiceGrid.css";
+import { Service } from "../types/services";
 
 export function useServices() { 
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
 
   const refetch = useCallback(async () => {
+    console.log("🔄 refetch called");
     setLoading(true);
     try {
       const r = await fetch("/api/services");
-      const data = await r.json() as ServicesResponse;
-      setServices(data.data);
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const data = await r.json() as Service[];
+      console.log("📦 API data:", data);
+      setServices(data);
+    } catch (error) {
+      console.error("💥 Fetch error:", error);
+      setServices([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, []);  
+
 
   useEffect(() => {
+    console.log("🚀 useEffect running");
     refetch();
-  }, [refetch]);
+  }, []);
 
   return { services, loading, refetch };
 }

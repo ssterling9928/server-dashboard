@@ -1,7 +1,6 @@
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 body {
@@ -15,7 +14,6 @@ body {
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
-  display: grid;
   grid-template-columns: 1fr 420px;
   gap: 2rem;
   min-height: 100vh;

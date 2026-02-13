@@ -1,6 +1,7 @@
 .services-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
   gap: 1.25rem;
   padding: 1.5rem 0;
   max-height: 90vh;
@@ -86,21 +87,6 @@
   font-family: 'Monaco', monospace;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-/* Custom scrollbar */
-.services-grid::-webkit-scrollbar {
-  width: 6px;
-}
-.services-grid::-webkit-scrollbar-track { 
-  background: rgba(15,15,35,0.3); 
-}
-.services-grid::-webkit-scrollbar-thumb { 
-  background: #94a3b8; 
-  border-radius: 3px; 
-}
-.services-grid::-webkit-scrollbar-thumb:hover { 
-  background: #60a5fa; 
 }
 
 @media (max-width: 1200px) {

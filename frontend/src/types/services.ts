@@ -9,12 +9,8 @@ export interface Service {
     name: string;
     group: string;
     is_docker: boolean;
-    url: string;
-    url_status: string;
+    url?: string;
+    url_status?: string;
     service_status: string;
-    container: DockerContainer;
-}
-
-export interface ServicesResponse {
-  data: Service[];
+    container?: DockerContainer;
 }

@@ -1,9 +1,9 @@
 version: "3.8"
 
 networks:
-  private:
+  private_vault:
     external: true
-    name: private
+    name: private_vault
 
 services:
   server-dashboard:
@@ -20,6 +20,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
     networks:
-      private:     
+      private_vault:     
         aliases:
           - server-dashboard
