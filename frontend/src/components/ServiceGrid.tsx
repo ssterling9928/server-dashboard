@@ -3,11 +3,15 @@ import { Service } from "../types/services";
 import '../css/ServiceGrid.css';
 import { restartContainer } from "../apis/restartContainer";
 import { useServices } from "../hooks/useServices";
-import { Modal } from "./Modal";
+import { Interface } from "node:readline";
+import { on } from "node:cluster";
 
-function ServiceGrid() {
+interface Props {
+  onSelect: (service: Service) => void;  // ← receive from App
+}
+
+export function ServiceGrid({ onSelect }: Props) {
   const { services, loading, refetch } = useServices();
-  const [selected, setSelected] = useState<Service | null>(null);
 
   if (loading) {
     return <div className="loading"> Loading...</div>;
@@ -23,7 +27,7 @@ function ServiceGrid() {
           <div
             key={service.id}
             className="service-card"
-            onClick={() => setSelected(service)}
+            onClick={() => onSelect(service)}
           >
             <div className='row'>
               <div><h3>{service.name}</h3></div>
@@ -38,4 +42,3 @@ function ServiceGrid() {
       </div>
   );
 }
-export default ServiceGrid;

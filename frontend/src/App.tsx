@@ -1,5 +1,5 @@
 // App.tsx
-import ServiceGrid from "./components/ServiceGrid";
+import { ServiceGrid } from "./components/ServiceGrid";
 import { Modal } from "./components/Modal";
 import { useState } from "react";
 import { Service } from "./types/services";
@@ -12,10 +12,11 @@ function App() {
 
     <>
       <div className="min-h-screen bg-gray-900">
-        <div className="app-container">
-          <ServiceGrid />
+        <div className="">
+          <ServiceGrid onSelect={setSelected}/>
         </div>
       </div>
+      
 
 
       {/* Modal OUTSIDE grid */}
@@ -94,6 +95,7 @@ function App() {
               </div>
             </div>
           </div>
+        
         )}
       </Modal>
     </>
