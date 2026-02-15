@@ -1,0 +1,28 @@
+{
+  "name": "Server Dashboard Monorepo (FastAPI + Vite)",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:0-20",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12"
+    }
+  },
+  "forwardPorts": [5173, 8100],
+  "postCreateCommand": "npm install -g pnpm && pnpm --version && cd frontend && pnpm install && cd ../backend && pip install -r requirements.txt",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.black-formatter",
+        "ms-python.debugpy",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-typescript-next",
+        "dbaeumer.vscode-eslint",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  },
+  "remoteUser": "vscode",
+  "workspaceFolder": "/workspace"
+}

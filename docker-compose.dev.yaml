@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  workspace:
+    image: mcr.microsoft.com/devcontainers/typescript-node:0-20
+    volumes:
+      - .:/workspace:cached
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: sleep infinity
+    ports:
+      - "5173:5173"
+      - "8100:8000"
