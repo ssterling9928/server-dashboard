@@ -3,8 +3,16 @@ import docker
 import requests
 from app.models import ContainerStatus, DockerContainer, ServiceState, URLStatus, ServiceStatus, ServiceConfig
 
+IS_DEV = os.getenv("CODESPACES") == "true"
+
+if not IS_DEV:
+    from docker import from_env
+    docker_client = from_env()
+else:
+    docker_client = None
+
+
 containers_by_name = {}
-docker_client = docker.from_env()
 
 def get_containers_by_name() -> dict[str, 'docker.models.containers.Container']:
     

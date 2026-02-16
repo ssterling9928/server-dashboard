@@ -1,17 +1,16 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
-  proxy: {
-    '/api': {
-      target: 'http://10.0.0.2:8100',
-      changeOrigin: true,
-    },
-  },
-  host: true,
-  allowedHosts: ['.sterling-dev.com', 'code.internal']  
-}
+    host: true,  // Important for Codespaces forwarded ports
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8000',  // FastAPI inside the SAME container
+        changeOrigin: true,
+        secure: false
+      }
+    }
+  }
 })

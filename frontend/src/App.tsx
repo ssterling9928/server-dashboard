@@ -1,6 +1,6 @@
 // App.tsx
 import { ServiceGrid } from "./components/ServiceGrid";
-import { Modal } from "./components/Modal";
+import { Modal } from "./components/Modal"
 import { useState } from "react";
 import { Service } from "./types/services";
 import { restartContainer } from "./apis/restartContainer";
